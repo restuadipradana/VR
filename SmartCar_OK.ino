@@ -10,24 +10,17 @@ VR myVR(2,3);    // 2:RX 3:TX, VR
 uint8_t records[7]; // save record
 uint8_t buf[64];
 
-int kontak = 4; // relay1 kontak
-int starter = 5; // relay2 starter
-int kondisi = 8; //kondisi mesin
+int kontak = 4;     // relay1 kontak
+int starter = 5;    // relay2 starter
+int kondisi = 8;    //kondisi mesin
 
-#define engStart    (0)
-#define nyalakan    (1)
-#define matikan    (2)
-//#define offRecord   (1) 
-
-
-
-
-
+#define engStart    (0)     //perintah "engine start"
+#define nyalakan    (1)     //perintah "nyalakan"
+#define matikan    (2)      //perintah "matikan"
 
 
 //----DFp
 SoftwareSerial mySoftwareSerial(10, 11); // RX, TX DFp
-
 DFRobotDFPlayerMini myDFPlayer;
 
 
@@ -35,12 +28,12 @@ DFRobotDFPlayerMini myDFPlayer;
 
 void setup()
 {
-    pinMode(kontak, OUTPUT);
+  pinMode(kontak, OUTPUT);
   pinMode(starter, OUTPUT);
   pinMode(kondisi, INPUT); 
 
-  digitalWrite(kontak, HIGH);
-  digitalWrite(starter, HIGH);
+  digitalWrite(kontak, HIGH);   //set pembalik logika relay
+  digitalWrite(starter, HIGH);  //set pembalik logika relay
   
   mySoftwareSerial.begin(9600);   //serial ke DFp
   
@@ -58,20 +51,14 @@ void setup()
   }
   Serial.println(F("DFPlayer Mini online."));
   myDFPlayer.setTimeOut(500);
-  myDFPlayer.volume(20);  //Set volume value. From 0 to 30
-  myDFPlayer.play(3);
+  myDFPlayer.volume(20);    //Set volume value. From 0 to 30
+  myDFPlayer.play(3);       //putar mp3 0003
 
 
   
   myVR.begin(9600); // serial ke VR
-  
-  Serial.println("Elechouse Voice Recognition V3 Module\r\nControl LED sample");
-  
-
-
-  //-----------debug
-
   //debug vr
+  Serial.println("Elechouse Voice Recognition V3 Module\r\nControl LED sample");
   if(myVR.clear() == 0){
     Serial.println("Recognizer cleared.");
   }else{
@@ -79,11 +66,6 @@ void setup()
     Serial.println("Please check connection and restart Arduino.");
     while(1);
   }
-
-
-
-
-  //definisi 
 
   if(myVR.load((uint8_t)engStart) >= 0){
     Serial.println("Start loaded");
@@ -95,8 +77,6 @@ void setup()
     Serial.println("Off loaded");
   }
   
-  
-
 }
 
 
@@ -169,23 +149,22 @@ void loop()
   if(ret>0){
     switch(buf[1]){
       
-      case engStart:
+      case engStart:    //perintah starter
         digitalWrite(starter, LOW);
         delay(1500);
         digitalWrite(starter, HIGH);
         if(digitalRead(kondisi) == HIGH){
-          myDFPlayer.play(1);  //Play the first mp3
+          myDFPlayer.play(1);  //putar mp3 0001
         }
         break;
       
-      case nyalakan:
-        /** turn off Kontak*/
+      case nyalakan:    //perintah nyalakan
+        /** turn on Kontak*/
         digitalWrite(kontak, LOW);
         break;
       
-      case matikan:
-        myDFPlayer.play(2);
-        delay(2000);
+      case matikan:     //perintah matikan
+        myDFPlayer.play(2); //putar mp3 0002
         /** turn off Kontak*/
         digitalWrite(kontak, HIGH);
         break;
