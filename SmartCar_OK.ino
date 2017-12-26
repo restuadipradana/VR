@@ -164,9 +164,12 @@ void loop()
         break;
       
       case matikan:     //perintah matikan
-        myDFPlayer.play(2); //putar mp3 0002
         /** turn off Kontak*/
         digitalWrite(kontak, HIGH);
+        delay(500);
+        if(digitalRead(kondisi) == LOW){
+          myDFPlayer.play(2);  //putar mp3 0002
+        }
         break;
       
       default:
