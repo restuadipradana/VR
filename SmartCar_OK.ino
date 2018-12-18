@@ -10,9 +10,9 @@ VR myVR(2,3);    // 2:RX 3:TX, VR
 uint8_t records[7]; // save record
 uint8_t buf[64];
 
-int kontak = 4;     // relay1 kontak
-int starter = 5;    // relay2 starter
-int kondisi = 8;    //kondisi mesin
+int kontak = A0;     // relay1 kontak
+int starter = A1;    // relay2 starter
+//int kondisi = 8;    //kondisi mesin
 
 #define engStart    (0)     //perintah "engine start"
 #define nyalakan    (1)     //perintah "nyalakan"
@@ -20,7 +20,7 @@ int kondisi = 8;    //kondisi mesin
 
 
 //----DFp
-SoftwareSerial mySoftwareSerial(10, 11); // RX, TX DFp
+SoftwareSerial mySoftwareSerial(5, 6); // RX, TX DFp
 DFRobotDFPlayerMini myDFPlayer;
 
 
@@ -30,7 +30,7 @@ void setup()
 {
   pinMode(kontak, OUTPUT);
   pinMode(starter, OUTPUT);
-  pinMode(kondisi, INPUT); 
+//  pinMode(kondisi, INPUT); 
 
   digitalWrite(kontak, HIGH);   //set pembalik logika relay
   digitalWrite(starter, HIGH);  //set pembalik logika relay
@@ -153,9 +153,9 @@ void loop()
         digitalWrite(starter, LOW);
         delay(1500);
         digitalWrite(starter, HIGH);
-        if(digitalRead(kondisi) == HIGH){
+//        if(digitalRead(kondisi) == HIGH){
           myDFPlayer.play(1);  //putar mp3 0001
-        }
+//        }
         break;
       
       case nyalakan:    //perintah nyalakan
@@ -167,9 +167,9 @@ void loop()
         /** turn off Kontak*/
         digitalWrite(kontak, HIGH);
         delay(500);
-        if(digitalRead(kondisi) == LOW){
+//        if(digitalRead(kondisi) == LOW){
           myDFPlayer.play(2);  //putar mp3 0002
-        }
+  //      }
         break;
       
       default:
