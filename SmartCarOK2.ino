@@ -4,6 +4,10 @@
 #include "Arduino.h"
 #include "DFRobotDFPlayerMini.h"
 
+#include <SPI.h>
+#include <Ethernet.h>
+#include <BlynkSimpleEthernet.h>
+
 //-------VR
 VR myVR(2,3);    // 2:RX 3:TX, VR
 
@@ -18,8 +22,8 @@ int light = A4;     // relay1 light cond
 
 //int kondisi = 8;    //kondisi mesin
 
-#define engOn    (0)     //perintah "engine on"
-#define engStart    (1)     //perintah "engine start"
+#define engOn    (0)     //perintah "turn on"
+#define engStart    (1)     //perintah "start"
 #define trnRight    (2)      //perintah "right"
 #define trnLeft    (3)     //perintah "left"
 #define lightOn    (4)      //perintah "light on"
@@ -31,9 +35,14 @@ int light = A4;     // relay1 light cond
 SoftwareSerial mySoftwareSerial(5, 6); // RX, TX DFp
 DFRobotDFPlayerMini myDFPlayer;
 
+//file mp3
 //0001 seatbelt
 //0002 engine ready
 //0003 machine off
+
+char auth[] = "43d6cf5c959f46858e0cf20d9836cfdb";
+
+#define W5100_CS  10
 
 
 void setup()
@@ -56,9 +65,6 @@ void setup()
   
   Serial.begin(115200); //serial ke komputer
   //debug DFp
-  Serial.println();
-  Serial.println(F("DFRobot DFPlayer Mini Demo"));
-  Serial.println(F("Initializing DFPlayer ... (May take 3~5 seconds)"));
   
   if (!myDFPlayer.begin(mySoftwareSerial)) {  //Use softwareSerial to communicate with mp3.
     Serial.println(F("Unable to begin:"));
@@ -68,7 +74,7 @@ void setup()
   }
   Serial.println(F("DFPlayer Mini online."));
   myDFPlayer.setTimeOut(500);
-  myDFPlayer.volume(20);    //Set volume value. From 0 to 30
+  myDFPlayer.volume(15);    //Set volume value. From 0 to 30
   //myDFPlayer.play(3);       //putar mp3 0003
 
 
@@ -105,6 +111,10 @@ void setup()
   if(myVR.load((uint8_t)engOff) >= 0){
     Serial.println("off loaded");
   }
+
+
+
+  Blynk.begin(auth);
   
 }
 
@@ -172,6 +182,7 @@ void printVR(uint8_t *buf)
 void loop()
 {
   
+  Blynk.run();
   
   int ret;
   ret = myVR.recognize(buf, 50);
